@@ -9,7 +9,7 @@ Discover and celebrate the quiet vibrancy of human talent.
 
 ## 🚀 Live Demo
 
-[View on Vercel](https://your-vercel-link.vercel.app)
+[View on Vercel](https://infinite-spectrum-lp.vercel.app/)
 
 ---
 
