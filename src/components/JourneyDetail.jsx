@@ -105,7 +105,3 @@ export default function JourneyDetail() {
     </motion.div>
   );
 }
-
-JourneyDetail.propTypes = {
-    // No props passed, so no PropTypes needed directly on JourneyDetail
-};

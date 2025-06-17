@@ -1,4 +1,4 @@
- import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   // Define animation variants for staggered effect

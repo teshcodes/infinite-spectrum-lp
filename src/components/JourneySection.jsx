@@ -30,7 +30,7 @@ const pillars = [
 		title: "Inspire",
 		desc: "Motivate others by sharing your story and achievements. Inspiration is contagious.",
 		icon: "✨",
-		color: "#B4D455", // A bright lime green
+		color: "#B4D455", // A bright yellow-green
 	},
 ];
 

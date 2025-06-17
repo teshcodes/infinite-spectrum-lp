@@ -3,7 +3,7 @@
 Discover and celebrate the quiet vibrancy of human talent.  
 **Infinite Spectrum** is a modern, responsive landing page built with React, designed to inspire, connect, and empower.
 
-![Screenshot](./screenshot/talent-1.png) <
+![Screenshot](./screenshot/talent-1a.png) <
 
 ---
 
@@ -30,20 +30,23 @@ Discover and celebrate the quiet vibrancy of human talent.
 
 ## 🖼️ Screenshots
 
-![Landing Page](./screenshot/landing-page.png)
-![Talent Gallery](./screenshot/talent-1.png)
-![Talent Gallery](./screenshot/talent-2.png)
-![Talent Gallery](./screenshot/talent-3.png)
+![Landing Page](./screenshot/landing-pagee.png)
+![Talent Gallery](./screenshot/talents-1.png)
+![Talent Gallery](./screenshot/talents-2.png)
 
 ---
 
 ## 🛠️ Tech Stack
 
-- [React](https://reactjs.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [react-confetti](https://github.com/alampros/react-confetti)
-- [react-router-dom](https://reactrouter.com/)
-- [Vercel](https://vercel.com/) for deployment
+- [React](https://reactjs.org/) – Core UI library
+- [React Router DOM](https://reactrouter.com/) – Routing
+- [Framer Motion](https://www.framer.com/motion/) – Animations
+- [react-confetti](https://github.com/alampros/react-confetti) – Confetti effect
+- [react-icons](https://react-icons.github.io/react-icons/) – Icon library
+- [FontAwesome](https://fontawesome.com/) – Additional icons (if used)
+- **CSS** – Custom styles (including dark mode)
+- [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) – Type checking (if used)
+- [Vercel](https://vercel.com/) – Deployment
 
 ---
 

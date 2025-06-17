@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence
+import PropTypes from "prop-types"; // Import PropTypes
 
 const tabs = [
 	{
@@ -463,12 +465,43 @@ const tabs = [
 export default function ExploreHub({ id }) {
 	const [activeTab, setActiveTab] = useState(0);
 
+    // Framer Motion variants for tab content transition
+    const contentVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                when: "beforeChildren",
+                staggerChildren: 0.05, // Stagger children for profile cards
+                duration: 0.3,
+            },
+        },
+        exit: {
+            opacity: 0,
+            y: 20,
+            transition: {
+                when: "afterChildren",
+                staggerChildren: 0.05,
+                staggerDirection: -1, // Reverse stagger on exit
+                duration: 0.2,
+            },
+        },
+    };
+
+    // Framer Motion variants for individual profile cards
+    const profileCardVariants = {
+        hidden: { opacity: 0, scale: 0.95 },
+        visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } },
+        exit: { opacity: 0, scale: 0.95, transition: { duration: 0.1 } },
+    };
+
 	return (
 		<section className="explore-hub" id={id}>
 			<h2>Navigate the Spectrum: Find Your Path.</h2>
 			<div className="tabs-nav" role="tablist">
 				{tabs.map((tab, idx) => (
-					<button
+					<motion.button
 						key={tab.name}
 						className={`tab-button${activeTab === idx ? " active" : ""}`}
 						role="tab"
@@ -476,45 +509,67 @@ export default function ExploreHub({ id }) {
 						aria-controls={`tab-panel-${idx}`}
 						id={`tab-${idx}`}
 						onClick={() => setActiveTab(idx)}
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
 					>
 						<span className="tab-icon">{tab.icon}</span> {tab.name}
-					</button>
+						{activeTab === idx && (
+							<motion.span
+								className="tab-active-indicator"
+								layoutId="tab-indicator"
+								transition={{ type: "spring", stiffness: 500, damping: 30 }}
+							/>
+						)}
+					</motion.button>
 				))}
 			</div>
-			<div
-				className="tab-content"
-				role="tabpanel"
-				id={`tab-panel-${activeTab}`}
-				aria-labelledby={`tab-${activeTab}`}
-			>
-				<div className="profile-grid">
-					{tabs[activeTab].profiles.map((profile) => (
-						<Link
-							to={`/profile/${profile.id}`}
-							className="talent-profile-card"
-							key={profile.id}
-							style={{ textDecoration: "none", color: "inherit" }}
-						>
-							<img
-								src={profile.img}
-								alt={profile.name}
-								className="profile-img"
-								loading="lazy"
-								style={{ objectFit: "cover" }}
-							/>
-							<div>
-								<strong>{profile.name}</strong>
-								<div className="profile-title">{profile.title}</div>
-								<div className="profile-desc" style={{ fontSize: "0.95rem", color: "#555", marginTop: 4 }}>
-									{profile.desc}
-								</div>
-							</div>
-						</Link>
-					))}
-				</div>
-			</div>
+            <AnimatePresence mode="wait"> {/* Use AnimatePresence for exit animations when tab changes */}
+                <motion.div
+                    key={activeTab} // Key changes when activeTab changes, triggering animations
+                    className="tab-content"
+                    role="tabpanel"
+                    id={`tab-panel-${activeTab}`}
+                    aria-labelledby={`tab-${activeTab}`}
+                    variants={contentVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                >
+                    <motion.div className="profile-grid">
+                        {tabs[activeTab].profiles.map((profile) => (
+                            <motion.div
+                                key={profile.id}
+                                variants={profileCardVariants}
+                                whileHover={{ scale: 1.03, boxShadow: "var(--shadow-md)" }} // Apply shadow from CSS variable
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <Link
+                                    to={`/profile/${profile.id}`}
+                                    className="talent-profile-card"
+                                >
+                                    <img
+                                        src={profile.img}
+                                        alt={profile.name}
+                                        className="profile-img"
+                                        loading="lazy"
+                                    />
+                                    <div>
+                                        <strong>{profile.name}</strong>
+                                        <div className="profile-title">{profile.title}</div>
+                                        <div className="profile-desc">{profile.desc}</div>
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </motion.div>
+            </AnimatePresence>
 		</section>
 	);
 }
+
+ExploreHub.propTypes = {
+    id: PropTypes.string,
+};
 
 export { tabs };

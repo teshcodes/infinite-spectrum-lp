@@ -1,71 +1,116 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaPlay, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+// Helper component for a custom video player
+const VideoPlayer = ({ videoId, title, description, thumbnail }) => {
+	const [isPlaying, setIsPlaying] = useState(false);
+
+	// Use hqdefault.jpg for better compatibility
+	const youtubeEmbedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`;
+	const defaultThumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+	return (
+		<div className="video-player-container">
+			{isPlaying ? (
+				<iframe
+					width="100%"
+					height="180"
+					src={youtubeEmbedUrl}
+					title={title}
+					frameBorder="0"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+					className="video-iframe"
+				></iframe>
+			) : (
+				<div
+					className="video-thumbnail-overlay"
+					onClick={() => setIsPlaying(true)}
+					style={{ backgroundImage: `url(${thumbnail || defaultThumbnail})` }}
+				>
+					<button className="play-button" aria-label={`Play video: ${title}`}>
+						<FaPlay />
+					</button>
+				</div>
+			)}
+			<div className="video-details">
+				<h4 className="video-title">{title}</h4>
+				<p className="video-description">{description}</p>
+			</div>
+		</div>
+	);
+};
+
 
 const testimonials = [
 	{
 		name: "Jordan",
-		quote: "Joining Infinite Spectrum helped me discover strengths I never knew I had.",
+		quote: "Joining Infinite Spectrum helped me discover strengths I never knew I had. The resources and community support were invaluable.",
 		img: "https://randomuser.me/api/portraits/men/32.jpg",
 		role: "Community Member",
 		rating: 5
 	},
 	{
 		name: "Taylor",
-		quote: "The community is so welcoming and inspiring!",
+		quote: "Through Infinite Spectrum, I found the clarity and courage to pivot my career and embrace new design challenges. Their mentorship was a game-changer.",
 		img: "https://randomuser.me/api/portraits/women/44.jpg",
-		role: "Designer",
-		rating: 4,
-		video: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+		role: "UX Designer",
+		rating: 5,
+		video: "dQw4w9WgXcQ",
+		videoTitle: "Designing for Impact: My Journey",
+		videoDescription: "Taylor shares how she leverages user experience design to create meaningful digital products and foster inclusive online spaces."
 	},
 	{
 		name: "Morgan",
-		quote: "I love the resources and encouragement I get here.",
+		quote: "Infinite Spectrum is where I honed my coding skills and connected with fellow developers. It's truly a collaborative environment.",
 		img: "https://randomuser.me/api/portraits/men/65.jpg",
-		role: "Developer",
+		role: "Software Developer",
 		rating: 5
 	},
 	{
 		name: "Ava",
-		quote: "Infinite Spectrum gave me the confidence to share my story.",
+		quote: "As an artist, finding a supportive community like this has been transformative. It's a space where creativity is truly celebrated.",
 		img: "https://randomuser.me/api/portraits/women/12.jpg",
-		role: "Artist",
+		role: "Digital Artist",
 		rating: 5,
 		inspirationImg: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
 	},
 	{
 		name: "Riley",
-		quote: "The encouragement and inspiration here are unmatched.",
+		quote: "Mentoring here has been incredibly rewarding. I've seen so many individuals unlock their potential, and it's truly inspiring.",
 		img: "https://randomuser.me/api/portraits/men/23.jpg",
-		role: "Mentor",
+		role: "Professional Mentor",
 		rating: 5,
-		video: "https://www.youtube.com/embed/ScMzIvxBSi4"
+		video: "qp0HIF3SfI4",
+		videoTitle: "How Great Leaders Inspire Action",
+		videoDescription: "Simon Sinek explores the 'why' behind influential leadership and how it inspires action."
 	},
 	{
 		name: "Samira",
-		quote: "I found my tribe and my voice.",
+		quote: "Infinite Spectrum gave me the platform and courage to finally share my stories. My writing has flourished because of this community.",
 		img: "https://randomuser.me/api/portraits/women/55.jpg",
-		role: "Writer",
+		role: "Content Writer",
 		rating: 4
 	},
 	{
 		name: "Eli",
-		quote: "Every day I learn something new from this community.",
+		quote: "The technical insights and collaborative projects here are fantastic. It's like having a powerhouse of engineering minds at your fingertips.",
 		img: "https://randomuser.me/api/portraits/men/77.jpg",
-		role: "Engineer",
+		role: "Robotics Engineer",
 		rating: 5,
-		video: "https://www.youtube.com/embed/tgbNymZ7vqY"
 	},
 	{
 		name: "Lena",
-		quote: "The support here is genuine and heartfelt.",
+		quote: "As a coach, I appreciate the genuine support system. It reinforces my belief in the power of community for personal growth.",
 		img: "https://randomuser.me/api/portraits/women/66.jpg",
-		role: "Coach",
+		role: "Life Coach",
 		rating: 4,
 		inspirationImg: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
 	},
 	{
 		name: "Noah",
-		quote: "Infinite Spectrum is a safe space to grow and connect.",
+		quote: "Infinite Spectrum is more than just a community; it's a safe space where I feel seen and encouraged to pursue my passions.",
 		img: "https://randomuser.me/api/portraits/men/88.jpg",
 		role: "Student",
 		rating: 5
@@ -74,127 +119,88 @@ const testimonials = [
 
 export default function Testimonials({ id }) {
 	const [idx, setIdx] = useState(0);
-	const isMobile = window.innerWidth < 700;
+	const isMobile = window.innerWidth < 768; // Changed breakpoint for common mobile width
 
-	// Show 1 at a time on mobile, 3 at a time on desktop
-	const visible = isMobile
-		? [testimonials[idx]]
-		: [
-				testimonials[idx],
-				testimonials[(idx + 1) % testimonials.length],
-				testimonials[(idx + 2) % testimonials.length]
-			];
+	// Determine how many testimonials to show based on screen size
+	const itemsToShow = isMobile ? 1 : 3;
+
+	// Create a circular array for testimonials
+	const getVisibleTestimonials = () => {
+		const visible = [];
+		for (let i = 0; i < itemsToShow; i++) {
+			visible.push(testimonials[(idx + i) % testimonials.length]);
+		}
+		return visible;
+	};
 
 	function prev() {
-		setIdx((idx - 1 + testimonials.length) % testimonials.length);
+		setIdx((prevIdx) => (prevIdx - 1 + testimonials.length) % testimonials.length);
 	}
 	function next() {
-		setIdx((idx + 1) % testimonials.length);
+		setIdx((prevIdx) => (prevIdx + 1) % testimonials.length);
 	}
 
 	return (
 		<section className="testimonials" id={id}>
 			<h2>Echoes of Inspiration</h2>
-			<div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 16, marginBottom: 24 }}>
+			<div className="testimonial-controls-wrapper">
 				<button
 					onClick={prev}
 					aria-label="Previous testimonials"
-					style={{
-						background: "none",
-						border: "none",
-						fontSize: 28,
-						color: "#6AB187",
-						cursor: "pointer",
-						padding: 8
-					}}
+					className="testimonial-nav-button"
 				>
-					‹
+					<FaChevronLeft />
 				</button>
 				<div
-					className="testimonial-slider"
+					className="testimonial-slider-inner"
 					style={{
-						display: "flex",
-						gap: 24,
-						overflow: "hidden",
-						maxWidth: isMobile ? 340 : 1100
+						maxWidth: isMobile ? "340px" : "1100px",
 					}}
 				>
-					<AnimatePresence initial={false}>
-						{visible.map((t, i) => (
+					<AnimatePresence initial={false} mode="wait">
+						{getVisibleTestimonials().map((t) => (
 							<motion.div
-								key={t.name}
+								key={t.name} // Using name as key, ensure names are unique
 								className="testimonial-card"
-								initial={{ opacity: 0, y: 40 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: -40 }}
-								transition={{ duration: 0.4 }}
+								initial={{ opacity: 0, x: isMobile ? 0 : 50, scale: 0.95 }}
+								animate={{ opacity: 1, x: 0, scale: 1 }}
+								exit={{ opacity: 0, x: isMobile ? 0 : -50, scale: 0.95 }}
+								transition={{ duration: 0.4, ease: "easeOut" }}
 								style={{
-									minWidth: isMobile ? 300 : 320,
-									maxWidth: 340,
-									background: "#fff",
-									borderRadius: 16,
-									boxShadow: "0 2px 12px rgba(44,62,80,0.08)",
-									padding: "2rem 1.5rem",
-									textAlign: "center",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "center"
+									minWidth: isMobile ? "300px" : "320px", // Card width
+									maxWidth: "340px", // Max width for individual card
+									flexShrink: 0,
 								}}
 							>
 								{t.video ? (
-									<>
-										<div style={{ color: "#6AB187", fontWeight: 600, marginBottom: 4 }}>
-											🎥 Video Testimonial
-										</div>
-										<div style={{ marginBottom: 16, width: "100%", aspectRatio: "16/9" }}>
-											<iframe
-												width="100%"
-												height="180"
-												src={t.video}
-												title={`Testimonial video by ${t.name}`}
-												frameBorder="0"
-												allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-												allowFullScreen
-												style={{ borderRadius: 12, width: "100%", height: 180 }}
-											/>
-										</div>
-									</>
+									<VideoPlayer
+										videoId={t.video}
+										title={t.videoTitle}
+										description={t.videoDescription}
+									/>
 								) : t.inspirationImg ? (
 									<img
 										src={t.inspirationImg}
 										alt="Inspiration"
-										style={{
-											width: 64,
-											height: 64,
-											borderRadius: 12,
-											objectFit: "cover",
-											marginBottom: 16
-										}}
+										className="testimonial-inspiration-img"
 									/>
 								) : (
 									<img
 										src={t.img}
 										alt={t.name}
-										style={{
-											width: 64,
-											height: 64,
-											borderRadius: "50%",
-											objectFit: "cover",
-											marginBottom: 16
-										}}
+										className="testimonial-img"
 									/>
 								)}
-								<blockquote style={{ fontStyle: "italic", color: "#444", marginBottom: 16 }}>
+								<blockquote className="testimonial-quote">
 									“{t.quote}”
 								</blockquote>
-								{/* Star rating */}
-								<div style={{ marginBottom: 8 }}>
+								<div className="testimonial-rating">
 									{Array.from({ length: 5 }).map((_, i) => (
-										<span key={i} style={{ color: i < t.rating ? "#FFD700" : "#e0e0e0", fontSize: 20 }}>★</span>
+										<span key={i} className={`star ${i < t.rating ? "filled" : ""}`}>★</span>
 									))}
 								</div>
-								<div style={{ fontWeight: 700, color: "#6AB187" }}>{t.name}</div>
-								<div style={{ fontSize: "0.95rem", color: "#888" }}>{t.role}</div>
+								<div className="testimonial-name">{t.name}</div>
+								<div className="testimonial-role">{t.role}</div>
 							</motion.div>
 						))}
 					</AnimatePresence>
@@ -202,32 +208,17 @@ export default function Testimonials({ id }) {
 				<button
 					onClick={next}
 					aria-label="Next testimonials"
-					style={{
-						background: "none",
-						border: "none",
-						fontSize: 28,
-						color: "#6AB187",
-						cursor: "pointer",
-						padding: 8
-					}}
+					className="testimonial-nav-button"
 				>
-					›
+					<FaChevronRight />
 				</button>
 			</div>
 			{/* Dots for navigation */}
-			<div style={{ textAlign: "center", marginTop: 8 }}>
+			<div className="testimonial-dots">
 				{testimonials.map((_, i) => (
 					<span
 						key={i}
-						style={{
-							display: "inline-block",
-							width: 10,
-							height: 10,
-							borderRadius: "50%",
-							background: idx === i ? "#6AB187" : "#e0e0e0",
-							margin: "0 4px",
-							cursor: "pointer"
-						}}
+						className={`dot ${idx === i ? "active" : ""}`}
 						onClick={() => setIdx(i)}
 						aria-label={`Go to testimonial ${i + 1}`}
 					/>

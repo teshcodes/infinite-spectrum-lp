@@ -1,273 +1,297 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight, faPlus, faTimes, faGift, faCheckCircle, faDownload } from '@fortawesome/free-solid-svg-icons'; // Import necessary icons
 
-// Countdown component (place at the top of this file)
+
+// Countdown component
 function Countdown() {
   const [seconds, setSeconds] = useState(300); // 5 minutes
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (seconds > 0) {
       const timer = setTimeout(() => setSeconds(seconds - 1), 1000);
       return () => clearTimeout(timer);
     }
   }, [seconds]);
-  const min = Math.floor(seconds / 60);
-  const sec = seconds % 60;
-  return <span>{min}:{sec.toString().padStart(2, "0")}</span>;
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return (
+    <span>
+      {minutes}:{remainingSeconds.toString().padStart(2, "0")}
+    </span>
+  );
 }
 
-// FAQAccordion component (place at the top of this file)
+// FAQAccordion component (using App.css classes)
 function FAQAccordion() {
   const faqs = [
     {
       q: "Will I get spammed?",
-      a: "Never! We only send you relevant updates and inspiration."
+      a: "Never! We only send you relevant updates and inspiration. Your inbox is safe with us."
     },
     {
       q: "Is it really free?",
-      a: "Yes, joining is 100% free and always will be."
+      a: "Yes, joining Infinite Spectrum is 100% free with no hidden costs, now or ever."
     },
     {
       q: "Can I unsubscribe anytime?",
-      a: "Absolutely. Every email has an unsubscribe link."
+      a: "Absolutely. We believe in your control. Every email you receive from us will have a clear unsubscribe link."
+    },
+    {
+      q: "What kind of resources will I get?",
+      a: "You'll receive exclusive guides, worksheets, community event invites, and inspiring stories directly to your inbox."
     }
   ];
   const [open, setOpen] = useState(null);
+
   return (
-    <div style={{ margin: "2rem auto 0 auto", maxWidth: 400 }}>
-      <h4 style={{ color: "#6AB187", marginBottom: 8 }}>FAQ</h4>
+    <div className="faq-list"> {/* Use .faq-list class */}
+      <h4 style={{ color: "var(--color-secondary)", marginBottom: "1rem" }}>Frequently Asked Questions</h4> {/* Use CSS variable for color */}
       {faqs.map((item, i) => (
-        <div key={i} style={{ marginBottom: 8 }}>
+        <div key={i} className="faq-item"> {/* Use .faq-item class */}
           <button
             onClick={() => setOpen(open === i ? null : i)}
-            style={{
-              width: "100%",
-              textAlign: "left",
-              background: "#f7f7f9",
-              border: "none",
-              borderRadius: 6,
-              padding: "0.7rem 1rem",
-              fontWeight: 600,
-              color: "#23272f",
-              cursor: "pointer"
-            }}
+            className="faq-question" // Use .faq-question class
             aria-expanded={open === i}
           >
             {item.q}
-            <span style={{ float: "right" }}>{open === i ? "−" : "+"}</span>
+            <FontAwesomeIcon icon={open === i ? faTimes : faPlus} className="faq-icon" /> {/* Using FontAwesome for icon */}
           </button>
-          {open === i && (
-            <div style={{ background: "#fff", padding: "0.7rem 1rem", borderRadius: 6, color: "#444" }}>
-              {item.a}
-            </div>
-          )}
+          <motion.div
+            initial={false}
+            animate={{ maxHeight: open === i ? "200px" : "0px", opacity: open === i ? 1 : 0 }} // Animate max-height and opacity
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="faq-answer"
+          >
+            <p>{item.a}</p> {/* Wrap answer in <p> for proper styling */}
+          </motion.div>
         </div>
       ))}
     </div>
   );
 }
 
-// TestimonialSlider component (place at the top of this file)
+// TestimonialSlider component (using App.css classes)
 function TestimonialSlider() {
   const testimonials = [
     {
-      name: "Jordan",
-      text: "Joining Infinite Spectrum helped me discover strengths I never knew I had.",
+      name: "Jordan P.",
+      text: "Joining Infinite Spectrum helped me discover strengths I never knew I had. It's been a game-changer!",
       img: "https://randomuser.me/api/portraits/men/32.jpg"
     },
     {
-      name: "Taylor",
-      text: "The community is so welcoming and inspiring!",
+      name: "Taylor R.",
+      text: "The Infinite Spectrum community is incredibly welcoming, supportive, and truly inspiring!",
       img: "https://randomuser.me/api/portraits/women/44.jpg"
     },
     {
-      name: "Morgan",
-      text: "I love the resources and encouragement I get here.",
+      name: "Morgan K.",
+      text: "I love the exclusive resources and constant encouragement I receive here. Highly recommend!",
       img: "https://randomuser.me/api/portraits/men/65.jpg"
+    },
+    {
+      name: "Alex V.",
+      text: "Finally, a place where I feel understood and empowered to explore my potential.",
+      img: "https://randomuser.me/api/portraits/women/66.jpg"
     }
   ];
   const [idx, setIdx] = useState(0);
 
+  const nextTestimonial = useCallback(() => {
+    setIdx((idx + 1) % testimonials.length);
+  }, [idx, testimonials.length]);
+
+  const prevTestimonial = () => {
+    setIdx((idx - 1 + testimonials.length) % testimonials.length);
+  };
+
+  // Optional: Auto-advance testimonials
+  useEffect(() => {
+    const interval = setInterval(nextTestimonial, 5000);
+    return () => clearInterval(interval);
+  }, [idx, nextTestimonial]); // Reset interval if idx changes manually
+
   return (
-    <div style={{ marginTop: 32, textAlign: "center" }}>
-      <div style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 16,
-        background: "#fff",
-        borderRadius: 12,
-        boxShadow: "0 2px 8px rgba(44,62,80,0.05)",
-        padding: "1rem 2rem"
-      }}>
-        <img src={testimonials[idx].img} alt={testimonials[idx].name} style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }} />
-        <div>
-          <div style={{ fontWeight: 600, color: "#6AB187" }}>{testimonials[idx].name}</div>
-          <div style={{ fontSize: "1rem", color: "#444", marginTop: 4 }}>{testimonials[idx].text}</div>
-        </div>
-      </div>
-      <div style={{ marginTop: 8 }}>
+    <div className="testimonial-slider"> {/* Use a new class for the container */}
+      <motion.div
+        key={idx} // Key changes to re-trigger animation on index change
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="testimonial-content" // Use a new class for the testimonial content box
+      >
+        <img src={testimonials[idx].img} alt={testimonials[idx].name} className="testimonial-img" /> {/* Use .testimonial-img */}
+        <blockquote>"{testimonials[idx].text}"</blockquote> {/* Use blockquote for semantic meaning */}
+        <div className="testimonial-name">{testimonials[idx].name}</div> {/* Use .testimonial-name */}
+      </motion.div>
+      <div className="testimonial-controls"> {/* Use a new class for controls */}
         <button
-          onClick={() => setIdx((idx - 1 + testimonials.length) % testimonials.length)}
-          style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6AB187", marginRight: 8 }}
+          onClick={prevTestimonial}
+          className="testimonial-nav-button" // Use a new class for nav buttons
           aria-label="Previous testimonial"
-        >‹</button>
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
         <button
-          onClick={() => setIdx((idx + 1) % testimonials.length)}
-          style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#6AB187" }}
+          onClick={nextTestimonial}
+          className="testimonial-nav-button" // Use a new class for nav buttons
           aria-label="Next testimonial"
-        >›</button>
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
+        </button>
       </div>
     </div>
   );
 }
 
-// Main ConversionSection component (replace the whole file with this)
+// --- Main ConversionSection Component ---
 export default function ConversionSection({ id }) {
   const [submitted, setSubmitted] = useState(false);
   const [email, setEmail] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
+    console.log("Email submitted:", email);
     setSubmitted(true);
   }
 
   return (
     <section className="conversion" id={id}>
-      <h2>Ready to Unfold Your Story?</h2>
-      {/* Why Join bullet points */}
-      <ul style={{
-        listStyle: "none",
-        padding: 0,
-        margin: "1rem 0 0 0",
-        color: "#444",
-        fontSize: "1rem"
-      }}>
-        <li>✅ Get exclusive resources</li>
-        <li>✅ Be inspired by real stories</li>
-        <li>✅ Connect with a supportive community</li>
-      </ul>
-      {/* Limited-time offer with countdown */}
-      <div style={{
-        background: "#FF6B6B",
-        color: "#fff",
-        borderRadius: 8,
-        padding: "0.5rem 1rem",
-        display: "inline-block",
-        margin: "1rem 0",
-        fontWeight: 600,
-        fontSize: "1rem"
-      }}>
-        🎁 Join in the next <Countdown /> and get our free guide!
-      </div>
-      <p>
-        Join <strong>2,000+</strong> others discovering their spectrum.<br />
-        Get exclusive resources, inspiration, and community invites.
-      </p>
+      <motion.h2
+        initial={{ opacity: 0, y: -30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true, amount: 0.5 }}
+      >
+        Ready to Unfold Your Story?
+      </motion.h2>
+
+      <motion.ul
+        className="why-join-list" // New class for why join list
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        viewport={{ once: true, amount: 0.5 }}
+      >
+        <li><FontAwesomeIcon icon={faCheckCircle} /> Unlock exclusive resources & tools</li>
+        <li><FontAwesomeIcon icon={faCheckCircle} /> Be inspired by real stories of discovery</li>
+        <li><FontAwesomeIcon icon={faCheckCircle} /> Connect with a vibrant, supportive community</li>
+      </motion.ul>
+
+      <motion.div
+        className="limited-offer-banner" // New class for the banner
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.4 }}
+        viewport={{ once: true, amount: 0.5 }}
+      >
+        <FontAwesomeIcon icon={faGift} /> Join in the next <Countdown /> and get our *free premium guide*!
+      </motion.div>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        viewport={{ once: true, amount: 0.5 }}
+      >
+        Join *<span className="highlight-text">2,000+</span>* others discovering their spectrum.<br />
+        Get exclusive resources, inspiration, and community invites delivered directly.
+      </motion.p>
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-        style={{ maxWidth: 400, margin: "2rem auto" }}
+        viewport={{ once: true, amount: 0.3 }}
+        className="conversion-form-container" // New container for form and progress
       >
         {/* Progress bar */}
         {!submitted && (
-          <div style={{ marginBottom: 16 }}>
-            <div style={{
-              background: "#e0e0e0",
-              borderRadius: 8,
-              height: 8,
-              width: "100%",
-              overflow: "hidden"
-            }}>
-              <div
-                style={{
-                  width: email ? "100%" : "40%",
-                  background: "#6AB187",
-                  height: "100%",
-                  borderRadius: 8,
-                  transition: "width 0.4s"
-                }}
-              />
-            </div>
-            <div style={{ fontSize: "0.85rem", color: "#888", marginTop: 4 }}>
-              {email ? "Ready to submit!" : "Enter your email to get started"}
+          <div className="signup-progress-bar"> {/* New class */}
+            <div className="signup-progress-fill" style={{ width: email ? "100%" : "40%" }} />
+            <div className="signup-progress-label">
+              {email ? "You're all set! Just hit 'Start'" : "Enter your email to get started..."}
             </div>
           </div>
         )}
+
         {/* Signup form and success message */}
         {!submitted ? (
-          <form className="signup-form" onSubmit={handleSubmit} style={{ display: "flex", gap: 0 }}>
+          <form className="signup-form" onSubmit={handleSubmit}>
             <input
               type="email"
-              placeholder="Your email"
+              placeholder="Your best email address"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              style={{
-                padding: "0.7rem 1rem",
-                borderRadius: "1rem 0 0 1rem",
-                border: "1px solid #ccc",
-                flex: 1,
-                fontSize: "1rem"
-              }}
+              className="signup-input" // New class
+              aria-label="Enter your email address"
             />
             <button
               type="submit"
-              className="cta"
-              style={{
-                borderRadius: "0 1rem 1rem 0",
-                fontWeight: 700,
-                padding: "0.7rem 1.5rem"
-              }}
+              className="cta signup-button" // Use cta class and a new specific class
             >
-              Start
+              Start Your Journey
             </button>
           </form>
         ) : (
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300 }}
-            style={{ textAlign: "center", color: "#6AB187", fontWeight: 600, fontSize: "1.2rem" }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="signup-success-message" // New class
           >
             <Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces={200} recycle={false} />
-            🎉 Thank you!<br />
-            Check your inbox for a welcome message.<br />
-            {/* Downloadable freebie */}
-            <a
-              href="/free-guide.pdf"
-              download
-              style={{
-                display: "inline-block",
-                marginTop: 16,
-                background: "#6AB187",
-                color: "#fff",
-                padding: "0.7rem 1.5rem",
-                borderRadius: 12,
-                textDecoration: "none",
-                fontWeight: 700
-              }}
+            <span className="success-icon">🎉</span> Thank you for joining!<br />
+            Check your inbox for a welcome message & your guide.
+            <motion.a
+              href="https://your-link-to-guide.com/your-guide.pdf" // <-- put your actual link here
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cta download-button"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
             >
-              Download Your Free Guide
-            </a>
+              <FontAwesomeIcon icon={faDownload} /> Download Your Free Guide
+            </motion.a>
           </motion.div>
         )}
       </motion.div>
+
       {/* Privacy assurance */}
-      <div style={{ fontSize: "0.9rem", color: "#888", marginTop: 8 }}>
+      <motion.div
+        className="privacy-assurance" // New class
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+        viewport={{ once: true, amount: 0.1 }}
+      >
         We respect your privacy. No spam, ever.
-      </div>
+      </motion.div>
+
       {/* Social proof avatars */}
-      <div style={{ marginTop: 24, display: "flex", justifyContent: "center", gap: 8 }}>
-        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-        <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-        <span style={{ color: "#888", fontSize: "0.95rem", alignSelf: "center" }}>and more...</span>
-      </div>
+      <motion.div
+        className="avatar-stack" // New class for the avatar stack
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar" className="profile-img" /> {/* Use profile-img */}
+        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" className="profile-img" />
+        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="User Avatar" className="profile-img" />
+        <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="User Avatar" className="profile-img" />
+        <span className="avatar-stack-text">and <strong>2,000+</strong> others already inside...</span>
+      </motion.div>
+
       {/* Testimonial slider */}
       <TestimonialSlider />
+
       {/* FAQ accordion */}
       <FAQAccordion />
     </section>

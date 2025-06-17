@@ -1,12 +1,12 @@
- import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion"; // <--- ADD THIS IMPORT
-import { useState, useEffect } from "react"; // <--- ADD THESE IMPORTS FOR SHARE BUTTON UX
+import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 const talentDetails = {
   "pattern-recognition": {
     title: "The Art of Pattern Recognition",
     description: "Spotting connections where others see chaos. Drives innovation and insight. Pattern recognition is the foundation of creativity and problem-solving in every field. It allows us to foresee trends, understand complex systems, and develop innovative solutions. Think of it as connecting the dots before anyone else even sees the dots.",
-    icon: "👁‍🗨", // Example icon
+    icon: "👁‍🗨",
   },
   "deep-empathy": {
     title: "The Craft of Deep Empathy",
@@ -87,7 +87,7 @@ export default function TalentDetail() {
   if (!detail) {
     return (
       <motion.div
-        className="talent-detail-page-container" // Use a class for consistent styling
+        className="talent-detail-page-container"
         variants={pageVariants}
         initial="hidden"
         animate="visible"
