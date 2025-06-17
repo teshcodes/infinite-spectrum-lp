@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const talents = [
     {
@@ -65,12 +66,41 @@ const talents = [
 ];
 
 export default function TalentGallery({ id }) {
+  // Framer Motion variants for staggered grid items
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+  };
+
   return (
     <section className="talent-gallery" id={id}>
       <h2>Talent Redefined: The Skills You Never Knew Were Art.</h2>
-      <div className="gallery-grid">
+      <motion.div
+        className="gallery-grid"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {talents.map((talent) => (
-          <div className="talent-card" key={talent.id}>
+          <motion.div
+            className="talent-card"
+            key={talent.id}
+            variants={itemVariants}
+            whileHover={{ scale: 1.03, boxShadow: "0 10px 40px rgba(44,62,80,0.15)" }}
+            whileTap={{ scale: 0.98 }}
+          >
             <h3>{talent.title}</h3>
             <p>{talent.desc}</p>
             <Link
@@ -78,11 +108,11 @@ export default function TalentGallery({ id }) {
               className="mini-cta"
               style={{ display: "inline-block", marginTop: "1rem" }}
             >
-              Explore {talent.title}
+              Learn More <span className="mini-cta-arrow">&rarr;</span>
             </Link>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }
