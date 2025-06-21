@@ -43,9 +43,9 @@ Discover and celebrate the quiet vibrancy of human talent.
 - [Framer Motion](https://www.framer.com/motion/) – Animations
 - [react-confetti](https://github.com/alampros/react-confetti) – Confetti effect
 - [react-icons](https://react-icons.github.io/react-icons/) – Icon library
-- [FontAwesome](https://fontawesome.com/) – Additional icons (if used)
+- [FontAwesome](https://fontawesome.com/) – Additional icons 
 - **CSS** – Custom styles (including dark mode)
-- [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) – Type checking (if used)
+- [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html) – Type checking 
 - [Vercel](https://vercel.com/) – Deployment
 
 ---
