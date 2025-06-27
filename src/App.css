@@ -282,17 +282,17 @@
  .cta {
    background: var(--color-primary);
    color: var(--color-white);
-   border: none;
-   padding: 1.2rem 2.8rem;
-   border-radius: var(--border-radius-lg);
-   font-size: 1.3rem;
-   font-weight: 600;
-   margin-top: 2rem;
+   border: 2px solid var(--color-primary);
+   padding: 1.2rem 3.5rem;
+   border-radius: var(--border-radius-pill);
+   font-size: 1.4rem;
+   font-weight: 700;
+   margin-top: 3rem;
    cursor: pointer;
-   box-shadow: 0 0 20px 6px rgba(255, 107, 107, 0.25);
+   box-shadow: 0 0 25px 8px rgba(255, 107, 107, 0.35);
    transition: all 0.3s ease-in-out;
    text-transform: uppercase;
-   letter-spacing: 0.05em;
+   letter-spacing: 0.08em;
    display: inline-flex;
    align-items: center;
    justify-content: center;
@@ -301,8 +301,9 @@
 
  .cta:hover {
    background: var(--color-secondary);
-   box-shadow: 0 0 30px 10px rgba(106, 177, 135, 0.3);
-   transform: translateY(-3px);
+   border-color: var(--color-secondary);
+   box-shadow: 0 0 40px 15px rgba(106, 177, 135, 0.45);
+   transform: translateY(-5px);
  }
 
  .cta .cta-icon {
@@ -351,15 +352,40 @@
  }
 
  .hero {
-   min-height: 80vh;
+   min-height: 90vh;
    display: flex;
    flex-direction: column;
    align-items: center;
    justify-content: center;
+   position: relative;
    background: linear-gradient(135deg, var(--color-light-gray) 0%, #e8eaf0 100%);
    overflow: hidden;
    text-align: center;
    padding: 8rem 1rem 10rem 1rem;
+   background-image: url(/public/abstract-background-image.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: var(--color-light-gray);
+    background-blend-mode: overlay;
+ }
+
+ .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 0;
+ }
+
+ .hero-content {
+   position: relative;
+   z-index: 1;
+   max-width: 900px;
  }
 
  .hero-bg-blobs {
@@ -377,8 +403,8 @@
    pointer-events: none;
    width: clamp(300px, 40vw, 600px);
    height: clamp(300px, 40vw, 600px);
-   filter: blur(80px);
-   opacity: 0.12;
+   filter: blur(100px);
+   opacity: 0.18;
    animation: blobFloat 20s infinite ease-in-out alternate;
  }
 
@@ -399,7 +425,6 @@
    background-color: var(--color-secondary);
  }
 
- /* Added color */
  .hero-bg-blobs .blob3 {
    top: 30%;
    left: 40%;
@@ -411,7 +436,6 @@
    background-color: #8CCF9D;
  }
 
- /* Added color */
 
  .hero-content {
    position: relative;
@@ -420,17 +444,20 @@
  }
 
  .hero-content h1 {
-   color: var(--color-dark);
+   color: var(--color-white);
    margin-bottom: 1.5rem;
-   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+   font-size: clamp(3rem, 7vw, 5.5rem);
+   font-weight: 800;
+   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+   line-height: 1.1;
  }
 
  .hero-content p {
-   color: var(--color-text-light);
-   /* Using text-light variable */
-   font-size: 1.3rem;
-   margin-bottom: 2rem;
-   max-width: 700px;
+   color: rgba(255, 255, 255, 0.9);
+   font-size: 1.4rem;
+   margin-bottom: 2.5rem;
+   max-width: 750px;
+   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
  }
 
  @keyframes blobFloat {
@@ -473,54 +500,155 @@
 
  /* --- Talent Gallery (Grid, visually engaging) --- */
  .talent-gallery {
-   background: var(--color-white);
+   background: var(--color-background-secondary);
+    padding: var(--section-padding);
+    text-align: center;
  }
 
  .talent-gallery h2 {
-   margin-bottom: 3rem;
+   margin-bottom: 3.5rem;
+   font-size: clamp(2.2rem, 5.5vw, 4rem);
+    color: var(--color-heading);
  }
 
  .gallery-grid {
    display: grid;
-   gap: 2.5rem;
+   gap: 3rem;
    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
    margin-top: 2rem;
    max-width: 1200px;
    margin-left: auto;
    margin-right: auto;
+   padding: 0 1rem;
  }
 
  .talent-card {
-   background: linear-gradient(145deg, var(--color-light-gray), #e8eaf0);
-   border-radius: var(--border-radius-md);
-   padding: 2.5rem 1.8rem;
-   box-shadow: var(--shadow-sm);
-   /* Framer motion handles hover, but keep initial state */
-   /* transition: transform 0.2s, box-shadow 0.2s; */
+   background: var(--color-white);
+   border-radius: var(--border-radius-lg);
+   padding: 2.8rem 2rem;
+   box-shadow: var(--shadow-md);
    cursor: pointer;
-   border: 1px solid rgba(0, 0, 0, 0.05);
+   border: 1px solid var(--color-border);
    text-align: left;
    display: flex;
    flex-direction: column;
    justify-content: space-between;
+   transition: all 0.3s ease;
+ }
+
+ .talent-card:hover {
+   box-shadow: var(--shadow-lg);
+   transform: translateY(-8px) rotateZ('1deg');
+   border-color: var(--color-primary);
  }
 
  .talent-card h3 {
-   font-size: 1.6rem;
+   font-size: 1.8rem;
    margin-bottom: 0.8rem;
    color: var(--color-primary);
+   line-height: 1.2;
  }
 
  .talent-card p {
-   font-size: 1rem;
-   color: #444;
+   font-size: 1.05rem;
+   color: var(--color-text-light);
    flex-grow: 1;
-   margin: 0 0 1.5rem 0;
+   margin: 0 0 1.8rem 0;
  }
 
  .talent-card .mini-cta {
+  background: var(--color-secondary);
+  color: var(--color-white);
+  box-shadow: 0 0 15px 3px rgba(106, 177, 135, 0.2);
    align-self: flex-start;
  }
+
+ .talent-card .mini-cta:hover {
+   background: var(--color-primary);
+   box-shadow: 0 0 20px 5px rgba(255, 107, 107, 0.25);
+   transform: translateY(-3px);
+ }
+
+ /* --- Dark Mode Overrides for Talent Gallery --- */
+body.dark-mode .talent-gallery {
+  background: var(--dark-bg-subtle);  
+}
+
+body.dark-mode .talent-gallery h2 {
+  color: var(--dark-text); 
+}
+
+body.dark-mode .talent-card {
+  background: var(--dark-card-bg);  
+  border-color: var(--dark-border);  
+  box-shadow: var(--shadow-dark-md);
+}
+
+body.dark-mode .talent-card:hover {
+  box-shadow: var(--shadow-dark-lg);
+  border-color: var(--color-secondary);  
+  transform: translateY(-8px) rotateZ(-1deg);  
+}
+
+body.dark-mode .talent-card h3 {
+  color: var(--color-secondary); 
+}
+
+body.dark-mode .talent-card p {
+  color: var(--dark-text-secondary); 
+}
+
+body.dark-mode .talent-card .mini-cta {
+  background: var(--color-primary); 
+  box-shadow: 0 0 15px 3px rgba(255, 107, 107, 0.2);
+}
+
+body.dark-mode .talent-card .mini-cta:hover {
+  background: var(--color-secondary); 
+  box-shadow: 0 0 20px 5px rgba(106, 177, 135, 0.25);
+}
+
+/* --- Responsive Adjustments for Talent Gallery --- */
+@media (max-width: 768px) {
+  .talent-gallery h2 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: 2.5rem;
+  }
+  .gallery-grid {
+    gap: 2rem;
+  }
+  .talent-card {
+    padding: 2rem 1.5rem;
+  }
+  .talent-card h3 {
+    font-size: 1.6rem;
+  }
+  .talent-card p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+ @media (max-width: 480px) {
+  .talent-gallery h2 {
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    margin-bottom: 2rem;
+  }
+  .gallery-grid {
+    gap: 1.5rem;
+    padding: 0 0.5rem;  
+  }
+  .talent-card {
+    padding: 1.5rem 1rem;
+  }
+  .talent-card h3 {
+    font-size: 1.4rem;
+  }
+  .talent-card p {
+    font-size: 0.95rem;
+  }
+}
+
 
  /* --- Journey Section (Clean, symmetrical) --- */
  .journey {
