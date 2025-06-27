@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
+ import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; 
 
 const talentDetails = {
   "pattern-recognition": {
@@ -68,14 +68,26 @@ const talentDetails = {
 export default function TalentDetail() {
   const { talentId } = useParams();
   const detail = talentDetails[talentId];
+  const navigate = useNavigate(); // Hook for programmatic navigation
 
-  const [copyStatus, setCopyStatus] = useState(""); // State for share button feedback
+  const [copyStatus, setCopyStatus] = useState("");
+  const timerRef = useRef(null); // Ref to hold the timer ID
 
+  // Effect to clear copy status message
   useEffect(() => {
     if (copyStatus) {
-      const timer = setTimeout(() => setCopyStatus(""), 2000); // Clear message after 2 seconds
-      return () => clearTimeout(timer);
+      // Clear any existing timer before setting a new one
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => setCopyStatus(""), 2000);
     }
+    // Cleanup function to clear timer if component unmounts or copyStatus changes
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [copyStatus]);
 
   // Framer Motion variants for the detail page entry
@@ -92,10 +104,10 @@ export default function TalentDetail() {
         initial="hidden"
         animate="visible"
       >
-        <div className="talent-detail-card-error"> {/* Styled error card */}
+        <div className="talent-detail-card-error">
           <h2>Talent Not Found</h2>
-          <p>The talent you are looking for does not exist.</p>
-          <Link to="/#talent-gallery" className="mini-cta"> {/* Use mini-cta for styling */}
+          <p>The talent you are looking for does not exist. Please check the URL.</p> {/* More helpful message */}
+          <Link to="/#talent-gallery" className="mini-cta">
             ← Back to Gallery
           </Link>
         </div>
@@ -103,44 +115,69 @@ export default function TalentDetail() {
     );
   }
 
+  const handleBackClick = (e) => {
+    e.preventDefault();  
+    // Navigate to the home page, then trigger scroll
+    navigate("/", { replace: true }); // Use replace to avoid extra history entries
+
+    setTimeout(() => {
+      const el = document.getElementById("talent-gallery");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });  
+      }
+    }, 100);  
+  };
+
+
   return (
     <motion.div
-      className="talent-detail-page-container" // Use a class for consistent styling
+      className="talent-detail-page-container"
       variants={pageVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="talent-detail-card"> {/* Wrap content in a card-like structure */}
-        <Link to="/" className="back-link"
-          onClick={() => {
-            // Use window.location.hash for smoother navigation to section on home
-            // This might need a slight delay if the page reloads, but often works well.
-            // For a single-page app, this link will just change the URL,
-            // App.js will render the home page, and then the scroll will happen.
-            setTimeout(() => {
-              const el = document.getElementById("talent-gallery");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
-            }, 100); // Small delay to ensure render before scroll
-          }}
-        >
+      <div className="talent-detail-card">
+        <Link to="/" className="back-link" onClick={handleBackClick}>
           ← Back to All Talents
         </Link>
 
         <h2 className="talent-detail-title">
-          {detail.icon && <span className="talent-icon">{detail.icon}</span>} {/* Add icon */}
+          {detail.icon && <span className="talent-icon">{detail.icon}</span>}{" "}
+          {/* Add icon */}
           {detail.title}
         </h2>
         <p className="talent-detail-description">{detail.description}</p>
 
-        <button
-          className="cta share-button" // Use cta class for main styling
+        <motion.button  
+          className="cta share-button"
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
             setCopyStatus("Link Copied!");
           }}
+          whileHover={{ scale: 1.05 }}  
+          whileTap={{ scale: 0.95 }}  
         >
-          Share This Talent {copyStatus === "Link Copied!" ? "✅" : "🔗"}
-        </button>
+          Share This Talent{" "}
+          {copyStatus === "Link Copied!" ? (
+            <motion.span
+              key="copied-icon"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            >
+              ✅
+            </motion.span>
+          ) : (
+            <motion.span
+              key="share-icon"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            >
+              🔗
+            </motion.span>
+          )}
+        </motion.button>
         {copyStatus && <p className="copy-feedback">{copyStatus}</p>}
       </div>
     </motion.div>
